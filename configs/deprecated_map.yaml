@@ -1,0 +1,8 @@
+# pattern -> replacement. Verify each entry against installed Manim before adding.
+imports:
+  "from manimlib import *": "from manim import *"
+  "import manimlib": "import manim"
+calls:
+  ShowCreation: Create
+  # TransformFromCopy exists in Manim CE; only rewrite if the linter proves misuse.
+methods_banned_on_mobjects: [intersect, union]   # seen hallucinated on Circle/Polygon; real boolean ops: manim.Intersection/Union

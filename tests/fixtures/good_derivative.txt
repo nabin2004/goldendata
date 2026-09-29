@@ -1,0 +1,46 @@
+<Plan>
+goal: Illustrate the derivative of f(x) = x^2 using a tracked point.
+skills: VoiceoverScene, ValueTracker, always_redraw, fit_in_frame, MathTex
+layout: Title top edge, axes centered below with frame-relative margins.
+camera: Fixed default frame.
+dynamics: ValueTracker drives a dot on the parabola via always_redraw.
+math: Raw LaTeX for f(x)=x^2.
+narration: Consider the function <bookmark mark='b1'/> then watch the point move <bookmark mark='b2'/>.
+validate: Bookmarks match wait_until_bookmark calls and mobjects stay inside margins.
+</Plan>
+```python
+from manim import *
+from manim_voiceover import VoiceoverScene
+from manim_voiceover.services.gtts import GTTSService
+
+class DerivativeScene(VoiceoverScene):
+    def fit_in_frame(self, mob: Mobject, w_frac: float = 0.9, h_frac: float = 0.9) -> Mobject:
+        max_w = config.frame_width * w_frac
+        max_h = config.frame_height * h_frac
+        if mob.width > max_w:
+            mob.width = max_w
+        if mob.height > max_h:
+            mob.height = max_h
+        return mob
+
+    def construct(self):
+        self.set_speech_service(GTTSService())
+
+        # [LAYOUT]
+        axes = Axes(x_range=[-3, 3], y_range=[0, 9]).to_edge(DOWN, buff=0.5)
+        graph = axes.plot(lambda x: x**2, color=BLUE)
+        title = MathTex(r"f(x) = x^2").to_edge(UP, buff=0.5)
+        self.fit_in_frame(title)
+        tracker = ValueTracker(1.0)
+
+        # [UPDATER]
+        dot = always_redraw(lambda: Dot(axes.c2p(tracker.get_value(), tracker.get_value() ** 2), color=RED))
+
+        # [BEAT 1 | sync: intro]
+        with self.voiceover(text="Consider the function <bookmark mark='b1'/> then watch the point move <bookmark mark='b2'/>.") as t:
+            self.play(Write(title), Create(axes), Create(graph))
+            self.wait_until_bookmark("b1")
+            self.play(Create(dot))
+            self.wait_until_bookmark("b2")
+            self.play(tracker.animate.set_value(2.5), run_time=2.0)
+```

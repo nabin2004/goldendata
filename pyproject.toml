@@ -1,0 +1,31 @@
+[project]
+name = "manim-aos-data"
+version = "0.1.0"
+requires-python = ">=3.11"
+dependencies = [
+  "manim>=0.19,<0.20",
+  "manim-voiceover>=0.3.7",
+  "gTTS>=2.5",
+  "datasets>=2.20",
+  "huggingface_hub>=0.24",
+  "pyyaml>=6",
+  "jsonschema>=4",
+  "pydantic>=2",
+  "typer>=0.12",
+  "rich>=13",
+  "httpx>=0.27",
+  "beautifulsoup4>=4.12",
+  "numpy", "scipy", "sympy",
+  "opencv-python-headless",
+  "pillow",
+]
+[project.optional-dependencies]
+dev = ["pytest", "ruff"]
+[project.scripts]
+manim-aos = "manim_aos_data.cli:app"
+[tool.setuptools.packages.find]
+where = ["src"]
+[tool.ruff]
+line-length = 100
+[tool.pytest.ini_options]
+testpaths = ["tests"]

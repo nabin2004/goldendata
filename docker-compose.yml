@@ -1,0 +1,25 @@
+services:
+  render:
+    image: manim-aos-render
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.render
+      args:
+        MANIM_TAG: ${MANIM_TAG:-stable}
+    working_dir: /manim
+    volumes:
+      - ./data/rendered/_scratch:/manim
+      - ${AOS_REPO:-./docker/empty}:/aos:ro
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      AOS_TTS_SPEECH: ${AOS_TTS_SPEECH:-GTTSService}
+      AOS_TTS_URL: http://host.docker.internal:8000
+      PYTHONPATH: ${AOS_PYTHONPATH:-/aos}
+  lab:
+    image: manim-aos-render
+    profiles: ["lab"]
+    ports: ["8888:8888"]
+    volumes:
+      - ./data/rendered/_scratch:/manim
+    command: jupyter lab --ip=0.0.0.0

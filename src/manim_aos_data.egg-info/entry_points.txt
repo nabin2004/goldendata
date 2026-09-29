@@ -1,0 +1,2 @@
+[console_scripts]
+manim-aos = manim_aos_data.cli:app

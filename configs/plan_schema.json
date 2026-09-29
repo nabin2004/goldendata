@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Plan block (parsed key: value lines)",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["goal","skills","layout","camera","dynamics","math","narration","validate"],
+  "properties": {
+    "goal": {"type":"string","minLength":5},
+    "skills": {"type":"string","minLength":3},
+    "layout": {"type":"string","minLength":3},
+    "camera": {"type":"string","minLength":3},
+    "dynamics": {"type":"string","minLength":3},
+    "math": {"type":"string","minLength":3},
+    "narration": {"type":"string","minLength":5},
+    "validate": {"type":"string","minLength":5}
+  }
+}

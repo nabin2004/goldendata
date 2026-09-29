@@ -1,0 +1,8 @@
+# Kwargs that were seen hallucinated. Applied ONLY per-class, never globally
+# (e.g. `size` is legal on some objects). Extend from linter rejection logs.
+banned:
+  "*": [element_color, max_magnitude, font_size_px, center_point]
+  DecimalNumber: [max_value]
+  Text: [size]
+  MathTex: [size]
+  Dot: [size]

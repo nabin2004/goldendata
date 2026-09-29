@@ -1,0 +1,25 @@
+manim_version: "0.19"
+source_dataset: nabin2004/manim-aos-5k400
+margin: 0.5
+tts_import: "manim_voiceover.services.gtts"   # GTTSService for zero-setup voiceover
+tts_service: "GTTSService"
+render:
+  backend: local                 # local | docker (env RENDER_BACKEND overrides)
+  docker_image: manim-aos-render
+  quality_flag: "-ql"
+  timeout_s: 180
+  workers: 4
+llm:
+  max_transform_retries: 3
+  max_repair_rounds: 2
+omni:
+  frames_per_scene: 6           # sampled at beat boundaries
+  overlap_iou_threshold: 0.05
+  clip_margin_frac: 0.02
+  max_av_drift_s: 0.25
+package:
+  sft_fraction: 0.8
+  repair_fraction: 0.2
+  dedup: minhash
+  eval_holdout: 200
+  contamination_check_against: [ManimBench-v1]
