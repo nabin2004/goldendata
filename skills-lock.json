@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "manim-composer": {
+      "source": "adithya-s-k/manim_skill",
+      "sourceType": "github",
+      "skillPath": "skills/manim-composer/SKILL.md",
+      "computedHash": "6cd978db31ce962c847783a3c76c099185ed31cad6a37efae591e2a87c50b758"
+    }
+  }
+}

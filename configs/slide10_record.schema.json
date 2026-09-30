@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Manim-AOS slide10 completion record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "prompt", "plan", "code", "end", "completion", "meta", "validation"],
+  "properties": {
+    "id": {"type": "string", "minLength": 1},
+    "prompt": {"type": "string", "minLength": 1},
+    "plan": {"$ref": "#/$defs/plan"},
+    "code": {"type": "string", "minLength": 1},
+    "end": {"$ref": "#/$defs/end"},
+    "completion": {"type": "string", "minLength": 1},
+    "meta": {
+      "type": "object",
+      "required": ["manim_version", "voice", "source", "split"],
+      "additionalProperties": false,
+      "properties": {
+        "manim_version": {"type": "string"},
+        "voice": {"const": "alba"},
+        "source": {"enum": ["synthetic", "repaired", "annotated"]},
+        "split": {"enum": ["train", "validation", "test"]}
+      }
+    },
+    "validation": {"type": "object"}
+  },
+  "$defs": {
+    "slide": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "class", "title", "narration_goal", "visuals", "bookmarks", "camera"],
+      "properties": {
+        "id": {"type": "integer", "minimum": 1, "maximum": 10},
+        "class": {"type": "string", "pattern": "^Slide(0[1-9]|10)_"},
+        "title": {"type": "string"},
+        "narration_goal": {"type": "string"},
+        "visuals": {"type": "array", "items": {"type": "string"}},
+        "bookmarks": {"type": "array", "items": {"type": "string"}},
+        "camera": {"type": "string"}
+      }
+    },
+    "plan": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["topic", "audience", "learning_goal", "voice", "slide_count", "slides"],
+      "properties": {
+        "topic": {"type": "string"},
+        "audience": {"type": "string"},
+        "learning_goal": {"type": "string"},
+        "voice": {"const": "alba"},
+        "slide_count": {"const": 10},
+        "slides": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"$ref": "#/$defs/slide"}}
+      }
+    },
+    "end": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["slide_order", "slide_count", "render_cmd", "concat", "checks"],
+      "properties": {
+        "slide_order": {"type": "array", "minItems": 10, "maxItems": 10, "items": {"type": "string"}},
+        "slide_count": {"const": 10},
+        "render_cmd": {"type": "string"},
+        "concat": {"type": "string"},
+        "checks": {"type": "array", "items": {"type": "string"}}
+      }
+    }
+  }
+}

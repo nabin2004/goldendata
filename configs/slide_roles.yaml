@@ -1,0 +1,33 @@
+slide_count: 10
+voice: alba
+roles:
+  - id: 1
+    class: Slide01_Title
+    role: Hook and title
+  - id: 2
+    class: Slide02_Motivation
+    role: Why this matters
+  - id: 3
+    class: Slide03_Prerequisites
+    role: Definitions and notation
+  - id: 4
+    class: Slide04_CoreIdea
+    role: Main concept and visual intuition
+  - id: 5
+    class: Slide05_Construction
+    role: Step-by-step build
+  - id: 6
+    class: Slide06_Formal
+    role: MathTex or formal statement
+  - id: 7
+    class: Slide07_Example
+    role: Worked example
+  - id: 8
+    class: Slide08_Camera
+    role: Zoom or pan on a detail
+  - id: 9
+    class: Slide09_Pitfalls
+    role: Common mistake or edge case
+  - id: 10
+    class: Slide10_Recap
+    role: Summary and takeaway
