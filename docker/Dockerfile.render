@@ -5,8 +5,11 @@ FROM manimcommunity/manim:${MANIM_TAG}
 
 # Installing system packages needs root; the base image's default user is not root.
 USER root
+ENV PATH="/usr/local/texlive/bin/x86_64-linux:${PATH}"
 RUN apt-get update \
- && apt-get install -y --no-install-recommends sox libsox-fmt-all \
+ && apt-get install -y --no-install-recommends \
+	sox libsox-fmt-all \
+	texlive-latex-base texlive-latex-extra \
  && rm -rf /var/lib/apt/lists/*
 
 RUN pip install --no-cache-dir "manim-voiceover>=0.3.7" "gTTS>=2.5" pyyaml httpx

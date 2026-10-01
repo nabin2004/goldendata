@@ -1,4 +1,4 @@
-PY=python
+PY=PYTHONPATH=src python
 setup:
 	$(PY) -m venv .venv && . .venv/bin/activate && pip install -e ".[dev]" && $(MAKE) docs-index
 docs-index:
@@ -13,6 +13,10 @@ validate:
 	$(PY) -m manim_aos_data.cli validate
 render:
 	$(PY) -m manim_aos_data.cli render
+dry-run:
+	$(PY) -m manim_aos_data.cli render --dry-run-only --limit 10
+dry-run-samples:
+	$(PY) scripts/dry_run_samples.py --limit 10
 omni:
 	$(PY) -m manim_aos_data.cli omni
 package:

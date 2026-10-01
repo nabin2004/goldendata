@@ -3,7 +3,7 @@ Name: manim-aos-data
 Version: 0.1.0
 Requires-Python: >=3.11
 Requires-Dist: manim<0.20,>=0.19
-Requires-Dist: manim-voiceover>=0.3.7
+Requires-Dist: manim-voiceover[transcribe]>=0.3.7
 Requires-Dist: gTTS>=2.5
 Requires-Dist: datasets>=2.20
 Requires-Dist: huggingface_hub>=0.24

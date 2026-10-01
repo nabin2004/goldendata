@@ -1,5 +1,5 @@
 manim<0.20,>=0.19
-manim-voiceover>=0.3.7
+manim-voiceover[transcribe]>=0.3.7
 gTTS>=2.5
 datasets>=2.20
 huggingface_hub>=0.24

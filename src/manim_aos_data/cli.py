@@ -1,4 +1,6 @@
 import json, os, sys
+from concurrent.futures import ThreadPoolExecutor
+from threading import Lock
 from pathlib import Path
 import typer
 from dotenv import load_dotenv
@@ -77,17 +79,44 @@ def validate():
             _append(ROOT / "data/canonical/validated.jsonl", c)
 
 @app.command()
-def render():
+def render(
+    limit: int = typer.Option(None, "--limit", "-l", help="Limit number of samples to process (e.g. 10)"),
+    dry_run_first: bool = typer.Option(True, "--dry-run-first/--no-dry-run-first", help="Run manim --dry_run before full render"),
+    dry_run_only: bool = typer.Option(False, "--dry-run-only", help="Only run manim --dry_run without video render"),
+    workers: int = typer.Option(None, "--workers", min=1, help="Maximum concurrent renders (default: pipeline config)"),
+):
     """Stage 4: headless render of validated samples."""
     import os, yaml
     from .render import render as run
     from .sample import parse_response
     cfg = yaml.safe_load((ROOT / "configs/pipeline.yaml").read_text())["render"]
     backend = os.environ.get("RENDER_BACKEND") or cfg.get("backend", "local")
-    for c in _read(ROOT / "data/canonical/validated.jsonl"):
-        res = run(parse_response(c["response"]).code, ROOT / "data/rendered" / c["id"], timeout=cfg["timeout_s"],
-                  backend=backend, image=cfg["docker_image"], quality=cfg["quality_flag"])
-        _append(ROOT / ("data/rendered/ok.jsonl" if res["ok"] else "logs/rejections.jsonl"), {**c, "stage": 4, **res})
+    worker_count = workers or int(cfg.get("workers", 1))
+    samples = _read(ROOT / "data/canonical/validated.jsonl")
+    if limit:
+        samples = samples[:limit]
+        print(f"Processing {len(samples)} samples (dry_run_first={dry_run_first}, dry_run_only={dry_run_only})")
+    sample_locks = {sample_id: Lock() for sample_id in {c["id"] for c in samples}}
+
+    def render_one(item):
+        i, c = item
+        with sample_locks[c["id"]]:
+            res = run(parse_response(c["response"]).code, ROOT / "data/rendered" / c["id"], timeout=cfg["timeout_s"],
+                      backend=backend, image=cfg["docker_image"], quality=cfg["quality_flag"],
+                      dry_run_first=dry_run_first, dry_run_only=dry_run_only)
+        return i, c, res
+
+    print(f"Rendering with {worker_count} concurrent worker(s)")
+    with ThreadPoolExecutor(max_workers=worker_count) as executor:
+        results = executor.map(render_one, enumerate(samples))
+        for i, c, res in results:
+            print(f"[{i+1}/{len(samples)}] Rendering sample {c['id']}...")
+            status = "OK" if res["ok"] else f"FAIL ({res.get('reason')})"
+            print(f"  -> {status}")
+            if not res["ok"] and res.get("stderr_tail"):
+                tail = res["stderr_tail"].strip().splitlines()[-4:]
+                print("     " + "\n     ".join(tail))
+            _append(ROOT / ("data/rendered/ok.jsonl" if res["ok"] else "logs/rejections.jsonl"), {**c, "stage": 4, **res})
 
 @app.command()
 def omni():

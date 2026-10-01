@@ -4,11 +4,12 @@ margin: 0.5
 tts_import: "manim_voiceover.services.gtts"   # GTTSService for zero-setup voiceover
 tts_service: "GTTSService"
 render:
-  backend: local                 # local | docker (env RENDER_BACKEND overrides)
+  backend: docker                # local | docker (env RENDER_BACKEND overrides)
   docker_image: manim-aos-render
   quality_flag: "-ql"
   timeout_s: 180
   workers: 4
+  dry_run_first: true           # run manim --dry_run before full video render
 llm:
   max_transform_retries: 3
   max_repair_rounds: 2
